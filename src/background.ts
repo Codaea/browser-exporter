@@ -215,23 +215,39 @@ function setMetrics() {
 
 // incremented counters
 chrome.tabs.onCreated.addListener(() => {
-    metricsManager.incrementCounter('tabs_opened', 1);
+    metricsManager.incrementCounter('chrome_tabs_opened', 1);
     console.log("Tab created")
 });
 
 chrome.tabs.onRemoved.addListener(() => {
-    metricsManager.incrementCounter('tabs_closed', 1);
+    metricsManager.incrementCounter('chrome_tabs_closed', 1);
     console.log("Tab removed")
 });
 
+chrome.bookmarks.onCreated.addListener(() => {
+    metricsManager.incrementCounter('chrome_bookmarks_created', 1);
+})
+
+chrome.bookmarks.onChanged.addListener(() => {
+    metricsManager.incrementCounter('chrome_bookmarks_changed', 1);
+});
+
+chrome.bookmarks.onChanged.addListener(() => {
+    metricsManager.incrementCounter('chrome_bookmarks_changed', 1);
+});
+
+chrome.bookmarks.onRemoved.addListener(() => {
+    metricsManager.incrementCounter('chrome_bookmarks_removed', 1);
+});
 
 chrome.webRequest.onCompleted.addListener(() => {
     metricsManager.incrementCounter('chrome_webrequests_completed_total', 1);
-}, { urls : ["<all_urls>"] });
+}, { urls: ["<all_urls>"] });
 
 chrome.webRequest.onErrorOccurred.addListener(() => {
     metricsManager.incrementCounter('chrome_webrequests_error_total', 1);
 }, { urls : ["<all_urls>"] });
+
 
 // alarms for pushing metrics
 chrome.alarms.create('pushMetrics', { periodInMinutes: 0.5 }); // 30 seconds is the minimum interval between alarms see https://developer.chrome.com/docs/extensions/reference/api/alarms
