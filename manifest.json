@@ -29,6 +29,7 @@
         "system.storage",
         "webRequest",
         "readingList",
-        "scripting"
+        "scripting",
+        "storage"
     ]
 }
