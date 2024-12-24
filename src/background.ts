@@ -179,7 +179,6 @@ function setMetrics() {
     // iframe nesting depth?
     // total distance scrollable in all tabs
 
-    chrome.tabs.query
 
     chrome.windows.getAll({}, (windows) => {
         metricsManager.setGauge('chrome_windows_open', windows.length);
@@ -224,6 +223,11 @@ chrome.tabs.onRemoved.addListener(() => {
     console.log("Tab removed")
 });
 
+chrome.tabs.onActivated.addListener((tab) => {
+    metricsManager.incrementCounter('chrome_tabs_changed', 1);
+    metricsManager.setGauge('chrome_tabs_currentactive', tab.tabId);
+})
+
 chrome.bookmarks.onCreated.addListener(() => {
     metricsManager.incrementCounter('chrome_bookmarks_created', 1);
 })
@@ -238,6 +242,14 @@ chrome.bookmarks.onChanged.addListener(() => {
 
 chrome.bookmarks.onRemoved.addListener(() => {
     metricsManager.incrementCounter('chrome_bookmarks_removed', 1);
+});
+
+chrome.windows.onCreated.addListener(() => {
+    metricsManager.incrementCounter('chrome_windows_opened', 1);
+});
+
+chrome.windows.onRemoved.addListener(() => {
+    metricsManager.incrementCounter('chrome_windows_closed', 1);
 });
 
 chrome.webRequest.onCompleted.addListener(() => {
