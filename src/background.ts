@@ -14,7 +14,6 @@ class MetricsManager {
         this.url = "http://devbox.mermaid-pike.ts.net:9091";
         this.metrics = [];
         this.initializeUUID();
-        this.initializeUUID();
     }
 
     async initializeUUID() {
@@ -101,7 +100,7 @@ class MetricsManager {
 const metricsManager = new MetricsManager();
 
 function pushMetrics() {
-    const url = "http://devbox.mermaid-pike.ts.net:9091"
+    const url = "https://chrome.codaealab.com"
     const body = metricsManager.generateMetrics();
     console.log("Pushing...")
     console.log(metricsManager.metrics)
@@ -109,11 +108,22 @@ function pushMetrics() {
 
     fetch(url + "/metrics/job/chrome-exporter", {
         method: "POST",
-        mode: "no-cors",
         headers: {
             "Content-Type": "text/plain"
         },
         body: body
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("Metrics pushed successfully:", data);
+    })
+    .catch(error => {
+        console.error("Failed to push metrics:", error);
     });
 }
 
