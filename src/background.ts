@@ -158,38 +158,6 @@ function setMetrics() {
         metricsManager.setGauge('chrome_tab_zoom_factor', zoomFactor);
     });
 
-    // calculate max zoom factor of all tabs
-
-    // calculate average zoom factor of all tabs
-
-    // calculate min zoom factor of all tabs
-
-    // to get these metrics, we have to inject a script into the tab to fetch the distance.
-
-    // total distance scrolled in all tabs
-    /*
-    let totalScrollDistance = 0;
-    chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((tab) => {
-            chrome.scripting.executeScript({
-                target: { tabId: tab.id! }, 
-                files : ['pageMetrics.js']
-                })
-        })
-    });
-
-    chrome.runtime.onMessage.addListener((message, sender) => {
-        if (message.type === 'scrollDistance') {
-            const scrollDistance = message.scrollDistance;
-            totalScrollDistance += scrollDistance.y;
-        }
-    })
-    */
-
-    // iframe nesting depth?
-    // total distance scrollable in all tabs
-
-
     chrome.windows.getAll({}, (windows) => {
         metricsManager.setGauge('chrome_windows_open', windows.length);
     });
@@ -206,14 +174,6 @@ function setMetrics() {
         metricsManager.setGauge('chrome_reading_list_total', readingListItems.length);
     })
     */
-
-    chrome.management.getAll((extensions) => {
-        metricsManager.setGauge('chrome_extensions', extensions.length);
-    });
-
-    chrome.downloads.search({ state: 'in_progress' }, (downloads) => {
-        metricsManager.setGauge('chrome_downloads_in_progress', downloads.length);
-    });
 
     chrome.system.memory.getInfo((info) => {
         metricsManager.setGauge('chrome_memory_available_bytes', info.availableCapacity);

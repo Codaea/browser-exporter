@@ -11,25 +11,16 @@
     "host_permissions": [
         "https://chrome.codaealab.com/metrics/job/chrome-exporter"
     ],
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["dist/pageMetrics.js"]
-        }
-    ],
     "permissions": [
         "alarms",
         "tabs",
         "windows",
         "bookmarks",
-        "management",
-        "downloads",
         "system.memory",
         "system.cpu",
         "system.storage",
         "webRequest",
         "readingList",
-        "scripting",
         "storage"
     ]
 }
