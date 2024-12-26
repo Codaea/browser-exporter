@@ -9,26 +9,18 @@
         "service_worker": "dist/background.js"
     },
     "host_permissions": [
-        "http://devbox.mermaid-pike.ts.net/*"
-    ],
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["dist/pageMetrics.js"]
-        }
+        "https://chrome.codaealab.com/metrics/job/chrome-exporter"
     ],
     "permissions": [
         "alarms",
         "tabs",
         "windows",
         "bookmarks",
-        "management",
-        "downloads",
         "system.memory",
         "system.cpu",
         "system.storage",
         "webRequest",
         "readingList",
-        "scripting"
+        "storage"
     ]
 }
