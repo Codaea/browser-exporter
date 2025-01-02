@@ -55,44 +55,13 @@ class MetricsManager {
             this.metrics[metricIndex].value = value;
         }
     }
-
-    /*
-    observeHistogram(name: string, value: number, buckets: number[]) {
-        let metric = this.metrics.find((metric: Metric) => metric.name === name && metric.type === 'histogram');
-        if (!metric) {
-            metric = { name: name, value: value, type: 'histogram', buckets: {} };
-            for (const bucket of buckets) {
-                metric.buckets[bucket] = 0;
-            }
-            metric.buckets[Infinity] = 0; // for values greater than highest bucket
-            this.metrics.push(metric);
-        }
-        metric.value += value;
-        for (const bucket of buckets) {
-            if (value <= bucket) {
-                metric.buckets[bucket]++;
-            }
-        }
-        this.metrics.buckets[Infinity]++;
-    }
-    */
-
     generateMetrics() {
         let output = '';
         for (const metric of this.metrics) {
             if (metric.type === 'counter' || metric.type === 'gauge') {
                 output += `# TYPE ${metric.name} ${metric.type}\n${metric.name}{uuid="${this.uuid}"} ${metric.value}\n`;
             } 
-            /*
-            else if (metric.type === 'histogram') {
-                output += `# TYPE ${metric.name} histogram\n`;
-                for (const [upperBound, count] of Object.entries(metric.buckets)) {
-                    output += `${metric.name}_bucket{le="${upperBound}"} ${count}\n`;
-                }
-                output += `${metric.name}_count ${metric.value}\n`;
-            }
-            */
-        }
+       }
         return output;
     }
 }
@@ -168,12 +137,6 @@ function setMetrics() {
         }, 0);
         metricsManager.setGauge('chrome_bookmarks', countBookmarks(bookmarksTreeNodes));
     });
-
-    /* // chrome is gaslighting me, this does exist in the api. https://developer.chrome.com/docs/extensions/reference/api/readingList
-    chrome.readingList.query({}, (readingListItems: ) => {
-        metricsManager.setGauge('chrome_reading_list_total', readingListItems.length);
-    })
-    */
 
     chrome.system.memory.getInfo((info) => {
         metricsManager.setGauge('chrome_memory_available_bytes', info.availableCapacity);
