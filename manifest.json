@@ -1,7 +1,12 @@
 {
-    "name": "Exporter for Chrome™",
-    "version": "1.0",
+    "name": "Browser Statistics Exporter",
+    "description": "Export browser performance and activity metrics for powerful visualization and analysis in monitoring platforms.",
+    "version": "1.0.0",
     "manifest_version": 3,
+    "icons": {
+        "16": "public/icon16.png",
+        "128": "public/icon128.png"
+    },
     "action": {
         "default_popup": "public/popup.html"
     },
