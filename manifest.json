@@ -8,13 +8,13 @@
         "128": "public/icon128.png"
     },
     "action": {
-        "default_popup": "public/popup.html"
+        "default_popup": "src/popup.html"
     },
     "background": {
-        "service_worker": "dist/background.js",
+        "service_worker": "src/background.ts",
         "type": "module"
     },
-    "options_page": "public/options.html",
+    "options_page": "src/options.html",
     "host_permissions": [
         "https://*/metrics/job/chrome-exporter"
     ],
