@@ -3,7 +3,7 @@ interface Metric {
     name: string;
     value: number;
     type?: 'counter' | 'gauge' | 'histogram';
-    buckets?: { [upperBound: number]: number};
+    buckets?: { [upperBound: number]: number };
 }
 
 class MetricsManager {
@@ -23,7 +23,7 @@ class MetricsManager {
             this.metrics[metricIndex].value += value;
         }
     }
-    
+
     setGauge(name: string, value: number) {
         const metricIndex = this.metrics.findIndex((metric: Metric) => metric.name === name && metric.type === 'gauge');
         if (metricIndex === -1) {
@@ -39,8 +39,8 @@ class MetricsManager {
         for (const metric of this.metrics) {
             if (metric.type === 'counter' || metric.type === 'gauge') {
                 output += `# TYPE ${metric.name} ${metric.type}\n${metric.name}{uuid="${uuid}"} ${metric.value}\n`;
-            } 
-       }
+            }
+        }
         return output;
     }
 }
@@ -48,7 +48,7 @@ class MetricsManager {
 const metricsManager = new MetricsManager();
 
 async function pushMetrics() {
-    const settings = await getSettings() 
+    const settings = await getSettings()
     const body = await metricsManager.generateMetrics();
 
     fetch(settings.url + "/metrics/job/chrome-exporter", {
@@ -58,18 +58,18 @@ async function pushMetrics() {
         },
         body: body
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.text();
-    })
-    .then(data => {
-        console.log("Metrics pushed successfully:", data);
-    })
-    .catch(error => {
-        console.error("Failed to push metrics:", error);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log("Metrics pushed successfully:", data);
+        })
+        .catch(error => {
+            console.error("Failed to push metrics:", error);
+        });
 }
 
 // gauge metrics
@@ -91,7 +91,7 @@ function setMetrics() {
     chrome.tabs.query({ discarded: true }, (tabs) => {
         metricsManager.setGauge('chrome_tabs_discarded', tabs.length);
     })
-    
+
     // blank tabs
     chrome.tabs.query({ url: 'chrome://newtab/' }, (tabs) => {
         metricsManager.setGauge('chrome_tabs_blank', tabs.length);
@@ -145,10 +145,6 @@ chrome.bookmarks.onChanged.addListener(() => {
     metricsManager.incrementCounter('chrome_bookmarks_changed', 1);
 });
 
-chrome.bookmarks.onChanged.addListener(() => {
-    metricsManager.incrementCounter('chrome_bookmarks_changed', 1);
-});
-
 chrome.bookmarks.onRemoved.addListener(() => {
     metricsManager.incrementCounter('chrome_bookmarks_removed', 1);
 });
@@ -167,7 +163,7 @@ chrome.webRequest.onCompleted.addListener(() => {
 
 chrome.webRequest.onErrorOccurred.addListener(() => {
     metricsManager.incrementCounter('chrome_webrequests_error_total', 1);
-}, { urls : ["<all_urls>"] });
+}, { urls: ["<all_urls>"] });
 
 
 // alarms for pushing metrics
