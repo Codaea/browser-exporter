@@ -4,6 +4,7 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
+    "dev": "tsc --watch",
     "build": "tsc --build",
     "clean": "tsc --build --clean"
   }

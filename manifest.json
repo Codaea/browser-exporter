@@ -6,10 +6,12 @@
         "default_popup": "public/popup.html"
     },
     "background": {
-        "service_worker": "dist/background.js"
+        "service_worker": "dist/background.js",
+        "type": "module"
     },
+    "options_page": "public/options.html",
     "host_permissions": [
-        "https://chrome.codaealab.com/metrics/job/chrome-exporter"
+        "https://*/metrics/job/chrome-exporter"
     ],
     "permissions": [
         "alarms",

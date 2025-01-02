@@ -1,18 +1,19 @@
-const button = document.getElementById('button');
+import { getSettings } from "./settings.js";
+const url = document.getElementById('url') as HTMLSpanElement;
+const uuid = document.getElementById('uuid') as HTMLSpanElement;
+const goToOptions = document.getElementById('go-to-options') as HTMLLinkElement;
 
-function PushMetrics() {
-    console.log("Pushing...")
-    const url = "http://devbox.mermaid-pike.ts.net:9091"
+document.addEventListener('DOMContentLoaded', () => {
+    getSettings().then((settings) => {
+        url.textContent = settings.url;
+        uuid.textContent = settings.uuid;
+    });
+});
 
-    fetch( url + "/metrics/job/chrome-exporter", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-            "Content-Type": "text/plain"
-        },
-        body: ``
-    })
-}
-
-
-
+goToOptions.addEventListener('click', function() {
+    if (chrome.runtime.openOptionsPage) {
+      chrome.runtime.openOptionsPage();
+    } else {
+      window.open(chrome.runtime.getURL('options.html'));
+    }
+});

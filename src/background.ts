@@ -1,3 +1,4 @@
+import { getUUID, getSettings } from "./settings.js";
 interface Metric {
     name: string;
     value: number;
@@ -8,36 +9,12 @@ interface Metric {
 class MetricsManager {
     metrics: Metric[];
     url: string;
-    uuid!: string;
 
     constructor() {
         this.url = "http://devbox.mermaid-pike.ts.net:9091";
         this.metrics = [];
-        this.initializeUUID();
     }
 
-    async initializeUUID() {
-        this.uuid = await this.getUUID();
-    }
-
-    // label to identify the computer to the metrics
-    getUUID(): Promise<string> {
-        return new Promise((resolve, reject) => {
-            chrome.storage.local.get('chrome_exporter_uuid', (items) => {
-                let uuid = items.chrome_exporter_uuid;
-                if (!uuid) {
-                    uuid = crypto.randomUUID().toString();
-                    chrome.storage.local.set({ 'chrome_exporter_uuid': uuid }, () => {
-                        resolve(uuid);
-                    });
-                } else {
-                    resolve(uuid);
-                }
-            });
-        });
-    }
-
-    
     incrementCounter(name: string, value = 1) {
         const metricIndex = this.metrics.findIndex((metric: Metric) => metric.name === name && metric.type === 'counter');
         if (metricIndex === -1) { // create metric if it doesn't exist
@@ -55,11 +32,13 @@ class MetricsManager {
             this.metrics[metricIndex].value = value;
         }
     }
-    generateMetrics() {
+
+    async generateMetrics() {
+        const uuid = await getUUID(); // get latest and greatest uuid
         let output = '';
         for (const metric of this.metrics) {
             if (metric.type === 'counter' || metric.type === 'gauge') {
-                output += `# TYPE ${metric.name} ${metric.type}\n${metric.name}{uuid="${this.uuid}"} ${metric.value}\n`;
+                output += `# TYPE ${metric.name} ${metric.type}\n${metric.name}{uuid="${uuid}"} ${metric.value}\n`;
             } 
        }
         return output;
@@ -68,14 +47,11 @@ class MetricsManager {
 
 const metricsManager = new MetricsManager();
 
-function pushMetrics() {
-    const url = "https://chrome.codaealab.com"
-    const body = metricsManager.generateMetrics();
-    console.log("Pushing...")
-    console.log(metricsManager.metrics)
-    console.log(body)
+async function pushMetrics() {
+    const settings = await getSettings() 
+    const body = await metricsManager.generateMetrics();
 
-    fetch(url + "/metrics/job/chrome-exporter", {
+    fetch(settings.url + "/metrics/job/chrome-exporter", {
         method: "POST",
         headers: {
             "Content-Type": "text/plain"
