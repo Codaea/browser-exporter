@@ -1,7 +1,10 @@
 {
-  "dependencies": {
+  "devDependencies": {
     "@types/chrome": "^0.0.287",
-    "tsc": "^2.0.4",
     "typescript": "^5.7.2"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
   }
 }
