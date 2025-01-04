@@ -51,7 +51,7 @@ async function pushMetrics() {
     const settings = await getSettings()
     const body = await metricsManager.generateMetrics();
 
-    fetch(settings.url + "/metrics/job/chrome-exporter", {
+    fetch(settings.url + "/metrics/job/browser-exporter", {
         method: "POST",
         headers: {
             "Content-Type": "text/plain"
