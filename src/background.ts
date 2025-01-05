@@ -8,10 +8,8 @@ interface Metric {
 
 class MetricsManager {
     metrics: Metric[];
-    url: string;
 
     constructor() {
-        this.url = "http://devbox.mermaid-pike.ts.net:9091";
         this.metrics = [];
     }
 
@@ -76,93 +74,93 @@ async function pushMetrics() {
 function setMetrics() {
     // get certain kinds of tabs?
     chrome.tabs.query({}, (tabs) => {
-        metricsManager.setGauge('chrome_tabs_open', tabs.length);
+        metricsManager.setGauge('browser_tabs_open', tabs.length);
     });
 
     chrome.tabs.query({ active: true }, (tabs) => {
-        metricsManager.setGauge('chrome_tabs_active', tabs.length);
+        metricsManager.setGauge('browser_tabs_active', tabs.length);
     });
 
     chrome.tabs.query({ muted: true }, (tabs) => {
-        metricsManager.setGauge('chrome_tabs_muted', tabs.length);
+        metricsManager.setGauge('browser_tabs_muted', tabs.length);
     });
 
     // tabs that are unloaded from memory
     chrome.tabs.query({ discarded: true }, (tabs) => {
-        metricsManager.setGauge('chrome_tabs_discarded', tabs.length);
+        metricsManager.setGauge('browser_tabs_discarded', tabs.length);
     })
 
     // blank tabs
     chrome.tabs.query({ url: 'chrome://newtab/' }, (tabs) => {
-        metricsManager.setGauge('chrome_tabs_blank', tabs.length);
+        metricsManager.setGauge('browser_tabs_blank', tabs.length);
     });
 
 
     // currently active tab's zoom factor
     chrome.tabs.getZoom((zoomFactor) => {
-        metricsManager.setGauge('chrome_tab_zoom_factor', zoomFactor);
+        metricsManager.setGauge('browser_tab_zoom_factor', zoomFactor);
     });
 
     chrome.windows.getAll({}, (windows) => {
-        metricsManager.setGauge('chrome_windows_open', windows.length);
+        metricsManager.setGauge('browser_windows_open', windows.length);
     });
 
     chrome.bookmarks.getTree((bookmarksTreeNodes) => {
         const countBookmarks = (nodes: chrome.bookmarks.BookmarkTreeNode[]): number => nodes.reduce((count, node) => {
             return count + (node.children ? countBookmarks(node.children) : 1);
         }, 0);
-        metricsManager.setGauge('chrome_bookmarks', countBookmarks(bookmarksTreeNodes));
+        metricsManager.setGauge('browser_bookmarks', countBookmarks(bookmarksTreeNodes));
     });
 
     chrome.system.memory.getInfo((info) => {
-        metricsManager.setGauge('chrome_memory_available_bytes', info.availableCapacity);
-        metricsManager.setGauge('chrome_memory_existing_bytes', info.capacity);
+        metricsManager.setGauge('browser_memory_available_bytes', info.availableCapacity);
+        metricsManager.setGauge('browser_memory_existing_bytes', info.capacity);
     });
 
 }
 
 // incremented counters
 chrome.tabs.onCreated.addListener(() => {
-    metricsManager.incrementCounter('chrome_tabs_opened', 1);
+    metricsManager.incrementCounter('browser_tabs_opened', 1);
     console.log("Tab created")
 });
 
 chrome.tabs.onRemoved.addListener(() => {
-    metricsManager.incrementCounter('chrome_tabs_closed', 1);
+    metricsManager.incrementCounter('browser_tabs_closed', 1);
     console.log("Tab removed")
 });
 
 chrome.tabs.onActivated.addListener((tab) => {
-    metricsManager.incrementCounter('chrome_tabs_changed', 1);
-    metricsManager.setGauge('chrome_tabs_currentactive', tab.tabId);
+    metricsManager.incrementCounter('browser_tabs_changed', 1);
+    metricsManager.setGauge('browser_tabs_currentactive', tab.tabId);
 })
 
 chrome.bookmarks.onCreated.addListener(() => {
-    metricsManager.incrementCounter('chrome_bookmarks_created', 1);
+    metricsManager.incrementCounter('browser_bookmarks_created', 1);
 })
 
 chrome.bookmarks.onChanged.addListener(() => {
-    metricsManager.incrementCounter('chrome_bookmarks_changed', 1);
+    metricsManager.incrementCounter('browser_bookmarks_changed', 1);
 });
 
 chrome.bookmarks.onRemoved.addListener(() => {
-    metricsManager.incrementCounter('chrome_bookmarks_removed', 1);
+    metricsManager.incrementCounter('browser_bookmarks_removed', 1);
 });
 
 chrome.windows.onCreated.addListener(() => {
-    metricsManager.incrementCounter('chrome_windows_opened', 1);
+    metricsManager.incrementCounter('browser_windows_opened', 1);
 });
 
 chrome.windows.onRemoved.addListener(() => {
-    metricsManager.incrementCounter('chrome_windows_closed', 1);
+    metricsManager.incrementCounter('browser_windows_closed', 1);
 });
 
 chrome.webRequest.onCompleted.addListener(() => {
-    metricsManager.incrementCounter('chrome_webrequests_completed_total', 1);
+    metricsManager.incrementCounter('browser_webrequests_completed_total', 1);
 }, { urls: ["<all_urls>"] });
 
 chrome.webRequest.onErrorOccurred.addListener(() => {
-    metricsManager.incrementCounter('chrome_webrequests_error_total', 1);
+    metricsManager.incrementCounter('browser_webrequests_error_total', 1);
 }, { urls: ["<all_urls>"] });
 
 

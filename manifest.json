@@ -1,7 +1,7 @@
 {
     "name": "Browser Statistics Exporter",
     "description": "Export browser performance and activity metrics for powerful visualization and analysis in monitoring platforms.",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "manifest_version": 3,
     "icons": {
         "16": "public/icon16.png",
@@ -16,7 +16,7 @@
     },
     "options_page": "src/options.html",
     "host_permissions": [
-        "https://*/metrics/job/chrome-exporter"
+        "https://*/metrics/job/browser-exporter"
     ],
     "permissions": [
         "alarms",
