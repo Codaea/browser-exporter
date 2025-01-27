@@ -32,11 +32,10 @@ class MetricsManager {
     }
 
     async generateMetrics() {
-        const uuid = await getUUID(); // get latest and greatest uuid
         let output = '';
         for (const metric of this.metrics) {
             if (metric.type === 'counter' || metric.type === 'gauge') {
-                output += `# TYPE ${metric.name} ${metric.type}\n${metric.name}{uuid="${uuid}"} ${metric.value}\n`;
+                output += `# TYPE ${metric.name} ${metric.type}\n${metric.name} ${metric.value}\n`;
             }
         }
         return output;
@@ -47,9 +46,10 @@ const metricsManager = new MetricsManager();
 
 async function pushMetrics() {
     const settings = await getSettings()
+    const uuid = await getUUID(); // get latest and greatest uuid
     const body = await metricsManager.generateMetrics();
 
-    fetch(settings.url + "/metrics/job/browser-exporter", {
+    fetch(settings.url + "/metrics/job/browser-exporter/instance/" + uuid , {
         method: "POST",
         headers: {
             "Content-Type": "text/plain"
