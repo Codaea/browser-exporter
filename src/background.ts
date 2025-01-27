@@ -1,4 +1,4 @@
-import { getUUID, getSettings } from "./settings.js";
+import { getUUID, getSettings, generateNewUuid } from "./settings.js";
 interface Metric {
     name: string;
     value: number;
@@ -179,6 +179,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 // on first install, redirect users to options page
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'install') {
+        generateNewUuid(); // so when we get to settings uuid isn't blank
         chrome.tabs.create({ url: chrome.runtime.getURL('/src/options.html') });
     }
 })
